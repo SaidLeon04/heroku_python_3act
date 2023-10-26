@@ -6,9 +6,9 @@ import mysql.connector
 
 app = fastapi.FastAPI()
 
-conexion = mysql.connector.connect(user='root', password='',
-                                 host='127.0.0.1',
-                                 database='contactos')
+conexion = mysql.connector.connect(user='p1r9pgzzwxe4j6kb', password='	vpibnawysgd89nqb',
+                                 host='ao9moanwus0rjiex.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
+                                 database='i0wmv2ry61hyawrx')
 cursor = conexion.cursor()
 #cursor.execute("CREATE TABLE IF NOT EXISTS contactos (correo VARCHAR(255) PRIMARY KEY, nombre VARCHAR(255), telefono VARCHAR(15))")
 class Contacto(BaseModel):
