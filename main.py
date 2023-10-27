@@ -20,7 +20,7 @@ async def crear_contacto(contacto: Contacto):
     """Crea un nuevo contacto."""
     # TODO Inserta el contacto en la base de datos y responde con un mensaje
     connection = conn.cursor()
-    conn.execute('INSERT INTO contacto (email, nombres, telefono) VALUES (contacto.email, contacto.nombre, contacto.telefono)')
+    conn.execute('INSERT INTO contactos (email, nombres, telefono) VALUES (contacto.email, contacto.nombre, contacto.telefono)')
     conn.commit()
     return contacto
 
