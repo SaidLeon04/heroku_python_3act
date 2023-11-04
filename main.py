@@ -1,11 +1,23 @@
 import fastapi
 import sqlite3
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 
 # Crea la base de datos
 conn = sqlite3.connect("contactos.db")
 
 app = fastapi.FastAPI()
+
+origins = [
+    "http://127.0.0.1:8080", 
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class Contacto(BaseModel):
     email : str
