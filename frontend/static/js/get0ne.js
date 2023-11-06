@@ -1,4 +1,4 @@
-function getOne(email) {
+function get_one(email) {
     const URL = "http://localhost:8000/contactos";
     var request = new XMLHttpRequest;
     request.open('GET',URL +"/" +email,true);
