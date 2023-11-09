@@ -1,6 +1,6 @@
 function getAll(){
     const URL = "http://localhost:8000/contactos";
-    //const URL = "ttps://shm-backend-105ae4e301e9.herokuapp.com/contactos";
+    //const URL = "https://shm-backend-105ae4e301e9.herokuapp.com/contactos";
     var request = new XMLHttpRequest;
     request.open('GET',URL);
     request.send();
@@ -22,16 +22,25 @@ function getAll(){
             var td_email = document.createElement("td");
             var td_nombre = document.createElement("td");
             var td_telefono = document.createElement("td");
+            var td_ver = document.createElement("td");
+            var td_editar = document.createElement("td");
+            var td_borrar = document.createElement("td");
 
             td_email.innerHTML = json[i]["email"];
             td_nombre.innerHTML = json[i]["nombre"];
             td_telefono.innerHTML = json[i]["telefono"];
+            td_ver.innerHTML = '<a href="../templates/ver.html?email="json[i]["email"]"">Ver</a>'
+            td_editar.innerHTML = "<a href='../templates/editar.html'>Editar</a>"
+            td_borrar.innerHTML = "<a href='../templates/borrar.html'>Borrar</a>"
 
-            console.log("Email: " + json[i]["email"]);
+            // console.log("Email: " + json[i]["email"]);
 
             tr.appendChild(td_email);
             tr.appendChild(td_nombre);
             tr.appendChild(td_telefono);
+            tr.appendChild(td_ver);
+            tr.appendChild(td_editar);
+            tr.appendChild(td_borrar);
             tbody_contactos.appendChild(tr);
         }
     };

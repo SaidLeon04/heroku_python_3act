@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<head>
+    <title>Prueba</title>
+</head>
+<body>
+    <h1>Prueba DOM</h1>
+    <label for="nombre">Nombre</label>
+    <input type="text" id="nombre">
+    <button value="Saludo" onclick="mensaje(document.getElementById('nombre').value)">Saludo</button>
+    <script type="text/javascript">
+        function mensaje(nombre){
+            alert("Hola " +  nombre);
+        };
+    </script>
+</body>
+</html>

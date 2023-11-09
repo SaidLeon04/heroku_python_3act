@@ -9,13 +9,16 @@ conn = sqlite3.connect("contactos.db")
 app = fastapi.FastAPI()
 
 origins = [
+    "http://localhost:8000",
     "http://127.0.0.1:8080", 
+    "http://localhost:8080/contactos",
+    "http://127.0.0.1:8080/contactos", 
 ]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
 
