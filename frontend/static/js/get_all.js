@@ -1,6 +1,6 @@
 function getAll(){
-    const URL = "http://localhost:8000/contactos";
-    //const URL = "https://shm-backend-105ae4e301e9.herokuapp.com/contactos";
+    //const URL = "http://localhost:8000/contactos";
+    const URL = "https://heroku-python-3act-62ad9044fdb9.herokuapp.com/contactos"
     var request = new XMLHttpRequest;
     request.open('GET',URL);
     request.send();

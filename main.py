@@ -61,7 +61,11 @@ async def obtener_contacto(email: str):
     contacto = None
     for row in c:
         contacto = {"email":row[0],"nombre":row[1],"telefono":row[2]}
-    return contacto
+    
+    if contacto == None:
+        raise fastapi.HTTPException(status_code=404, detail="Contacto no encontrado")
+    else: 
+        return contacto
 
 
 @app.put("/contactos/{email}")
