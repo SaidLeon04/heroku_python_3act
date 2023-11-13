@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contactos</title>
+</head>
+<script type="text/javascript" src="../static/js/borrar_data.js"></script>
+<script type="text/javascript" src="../static/js/borrar.js"></script>
+<script>
+    var urlParams = new URLSearchParams(window.location.search);
+    var email = urlParams.get('email');
+</script>
+<body onload="borrar_data()">
+    <a href="index.html">Regresar</a>
+    <button onclick="borrar(email)">Borrar</button>
+</body>
+</html>

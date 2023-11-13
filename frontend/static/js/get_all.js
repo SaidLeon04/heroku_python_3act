@@ -27,11 +27,12 @@ function getAll(){
             var td_borrar = document.createElement("td");
 
             td_email.innerHTML = json[i]["email"];
+            var emailCodificado = encodeURIComponent(json[i]["email"]);
             td_nombre.innerHTML = json[i]["nombre"];
             td_telefono.innerHTML = json[i]["telefono"];
-            td_ver.innerHTML = '<a href="../templates/ver.html?email="json[i]["email"]"">Ver</a>'
-            td_editar.innerHTML = "<a href='../templates/editar.html'>Editar</a>"
-            td_borrar.innerHTML = "<a href='../templates/borrar.html'>Borrar</a>"
+            td_ver.innerHTML = '<a href="../templates/ver.html?email=' + emailCodificado + '">Ver</a>';
+            td_editar.innerHTML = '<a href="../templates/editar.html?email='+ emailCodificado +'">Editar</a>';
+            td_borrar.innerHTML = '<a href="../templates/borrar.html?email='+ emailCodificado +'">Borrar</a>';
 
             // console.log("Email: " + json[i]["email"]);
 

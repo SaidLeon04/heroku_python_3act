@@ -10,14 +10,15 @@ function insert(email, nombre, telefono){
     console.log(post)
     request.send(post)
 
-    window.location.href = "../templates/index.html";
-
-    /*request.onload = (e) => {
+    request.onload = (e) => {
         const response = request.responseText;
         const json = JSON.parse(response);
         console.log("response: " + response);
         console.log("json: " + json);
         console.log("status_code: " + request.status);
-    }*/
+        window.location.href = "../templates/index.html";
+    }
     
 }
+
+
