@@ -9,11 +9,7 @@ conn = sqlite3.connect("contactos.db")
 app = fastapi.FastAPI()
 
 origins = [
-    "http://localhost:8000",
-    "http://127.0.0.1:8080", 
-    "http://localhost:8000/contactos",
-    "http://127.0.0.1:8000/contactos"
-    "https://frontentapi-de4686146bd2.herokuapp.com"
+    "*"
 ]
 app.add_middleware(
     CORSMiddleware,
