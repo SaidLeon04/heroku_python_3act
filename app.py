@@ -10,8 +10,8 @@ def index():
 
 @app.route("/buscar",methods=["GET","POST"])
 def buscar():
-    return render_template('buscar.html')
+    return render_template('index.html')
 
 @app.route("/prueba")
 def prueba():
-    return render_template('prueba.html')
+    return render_template('buscar.html')
