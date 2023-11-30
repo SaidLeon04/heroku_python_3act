@@ -29,24 +29,31 @@ class Contacto(BaseModel):
 @app.post("/contactos")
 async def crear_contacto(contacto: Contacto):
     """Crea un nuevo contacto."""
-    # TODO Inserta el contacto en la base de datos y responde con un mensaje
     c = conn.cursor()
-    c.execute('INSERT INTO contactos (email, nombre, telefono) VALUES (?, ?, ?)',
-              (contacto.email, contacto.nombre, contacto.telefono))
-    conn.commit()
-    return contacto
+
+    c.execute('SELECT * FROM contactos WHERE email = ?', (contacto.email,))
+    existe = c.fetchone()
+    if existe is not None:
+        raise fastapi.HTTPException(status_code=400, detail="Contacto ya existe")   
+    else:
+        c.execute('INSERT INTO contactos (email, nombre, telefono) VALUES (?, ?, ?)',
+                (contacto.email, contacto.nombre, contacto.telefono))
+        conn.commit()
+        return contacto
 
 @app.get("/contactos")
 async def obtener_contactos():
     """Obtiene todos los contactos."""
-    # TODO Consulta todos los contactos de la base de datos y los envia en un JSON
     c = conn.cursor()
     c.execute('SELECT * FROM contactos;')
     response = []
     for row in c:
         contacto = {"email":row[0],"nombre":row[1], "telefono":row[2]}
         response.append(contacto)
-    return response
+    if response == -1: 
+        raise fastapi.HTTPException(status_code=400, detail="Error al consultar los datos")
+    else:
+        return response
 
 
 @app.get("/contactos/{email}")
