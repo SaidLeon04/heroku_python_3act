@@ -75,20 +75,30 @@ async def obtener_contacto(email: str):
 @app.put("/contactos/{email}")
 async def actualizar_contacto(email: str, contacto: Contacto):
     """Actualiza un contacto."""
-    # TODO Actualiza el contacto en la base de datos
     c = conn.cursor()
-    c.execute('UPDATE contactos SET nombre = ?, telefono = ? WHERE email = ?',
+
+    c.execute('SELECT * FROM contactos WHERE email = ?', (contacto.email,))
+    existe = c.fetchone()
+    if existe is None:
+        raise fastapi.HTTPException(status_code=400, detail="Contacto no existe")   
+    else:
+        c.execute('UPDATE contactos SET nombre = ?, telefono = ? WHERE email = ?',
               (contacto.nombre, contacto.telefono, email))
-    conn.commit()
-    return contacto
+        conn.commit()
+        return contacto
 
 
 @app.delete("/contactos/{email}")
 async def eliminar_contacto(email: str):
     """Elimina un contacto."""
-    # TODO Elimina el contacto de la base de datos
     c = conn.cursor()
-    c.execute('DELETE FROM contactos WHERE email = ?', (email,))
-    conn.commit()
-    return {"mensaje":"Contacto eliminado"}
+    
+    c.execute('SELECT * FROM contactos WHERE email = ?', (email,))
+    existe = c.fetchone()
+    if existe is None:
+        raise fastapi.HTTPException(status_code=400, detail="Contacto no existe")   
+    else:
+        c.execute('DELETE FROM contactos WHERE email = ?', (email,))
+        conn.commit()
+        return {"mensaje":"Contacto eliminado"}
     
