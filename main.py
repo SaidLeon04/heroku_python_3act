@@ -15,6 +15,7 @@ from fastapi.security import HTTPAuthorizationCredentials
 conn = sqlite3.connect("contactos.db")
 
 app = fastapi.FastAPI()
+securityBearer = HTTPBearer()
 
 origins = [
     "*"
@@ -34,83 +35,121 @@ class Contacto(BaseModel):
 
 
 @app.post("/contactos")
-async def crear_contacto(contacto: Contacto):
+async def crear_contacto(contacto: Contacto, credentials: HTTPAuthorizationCredentials = Depends(securityBearer)):
     """Crea un nuevo contacto."""
-    c = conn.cursor()
-
-    c.execute('SELECT * FROM contactos WHERE email = ?', (contacto.email,))
+    connx = sqlite3.connect("usuarios.db")
+    token = credentials.credentials
+    c = connx.cursor()
+    c.execute('SELECT token FROM usuarios WHERE token = ?', (token,))
     existe = c.fetchone()
-    if existe is not None:
-        raise fastapi.HTTPException(status_code=400, detail="Contacto ya existe")   
+    if existe is None:
+        raise fastapi.HTTPException(status_code=401, detail="Token Innexistente")
     else:
-        c.execute('INSERT INTO contactos (email, nombre, telefono) VALUES (?, ?, ?)',
-                (contacto.email, contacto.nombre, contacto.telefono))
-        conn.commit()
-        return contacto
+        c = conn.cursor()
+
+        c.execute('SELECT * FROM contactos WHERE email = ?', (contacto.email,))
+        existe = c.fetchone()
+        if existe is not None:
+            raise fastapi.HTTPException(status_code=400, detail="Contacto ya existe")   
+        else:
+            c.execute('INSERT INTO contactos (email, nombre, telefono) VALUES (?, ?, ?)',
+                    (contacto.email, contacto.nombre, contacto.telefono))
+            conn.commit()
+            return contacto
 
 @app.get("/contactos")
-async def obtener_contactos():
+async def obtener_contactos(credentials: HTTPAuthorizationCredentials = Depends(securityBearer)):
     """Obtiene todos los contactos."""
-    c = conn.cursor()
-    c.execute('SELECT * FROM contactos;')
-    response = []
-    for row in c:
-        contacto = {"email":row[0],"nombre":row[1], "telefono":row[2]}
-        response.append(contacto)
-    if response == -1: 
-        raise fastapi.HTTPException(status_code=400, detail="Error al consultar los datos")
+    connx = sqlite3.connect("usuarios.db")
+    token = credentials.credentials
+    c = connx.cursor()
+    c.execute('SELECT token FROM usuarios WHERE token = ?', (token,))
+    existe = c.fetchone()
+    if existe is None:
+        raise fastapi.HTTPException(status_code=401, detail="Token Innexistente")
     else:
-        return response
+        c = conn.cursor()
+        c.execute('SELECT * FROM contactos;')
+        response = []
+        for row in c:
+            contacto = {"email":row[0],"nombre":row[1], "telefono":row[2]}
+            response.append(contacto)
+        if response == -1: 
+            raise fastapi.HTTPException(status_code=400, detail="Error al consultar los datos")
+        else:
+            return response
 
 
 @app.get("/contactos/{email}")
-async def obtener_contacto(email: str):
+async def obtener_contacto(email: str, credentials: HTTPAuthorizationCredentials = Depends(securityBearer)):
     """Obtiene un contacto por su email."""
-    # Consulta el contacto por su email
-    c = conn.cursor()
-    c.execute('SELECT * FROM contactos WHERE email = ?', (email,))
-    contacto = None
-    for row in c:
-        contacto = {"email":row[0],"nombre":row[1],"telefono":row[2]}
-    
-    if contacto == None:
-        raise fastapi.HTTPException(status_code=404, detail="Contacto no encontrado")
-    else: 
-        return contacto
+    connx = sqlite3.connect("usuarios.db")
+    token = credentials.credentials
+    c = connx.cursor()
+    c.execute('SELECT token FROM usuarios WHERE token = ?', (token,))
+    existe = c.fetchone()
+    if existe is None:
+        raise fastapi.HTTPException(status_code=401, detail="Token Innexistente")
+    else:
+        c = conn.cursor()
+        c.execute('SELECT * FROM contactos WHERE email = ?', (email,))
+        contacto = None
+        for row in c:
+            contacto = {"email":row[0],"nombre":row[1],"telefono":row[2]}
+        
+        if contacto == None:
+            raise fastapi.HTTPException(status_code=404, detail="Contacto no encontrado")
+        else: 
+            return contacto
 
 
 @app.put("/contactos/{email}")
-async def actualizar_contacto(email: str, contacto: Contacto):
+async def actualizar_contacto(email: str, contacto: Contacto, credentials: HTTPAuthorizationCredentials = Depends(securityBearer)):
     """Actualiza un contacto."""
-    c = conn.cursor()
-
-    c.execute('SELECT * FROM contactos WHERE email = ?', (contacto.email,))
+    connx = sqlite3.connect("usuarios.db")
+    token = credentials.credentials
+    c = connx.cursor()
+    c.execute('SELECT token FROM usuarios WHERE token = ?', (token,))
     existe = c.fetchone()
     if existe is None:
-        raise fastapi.HTTPException(status_code=400, detail="Contacto no existe")   
+        raise fastapi.HTTPException(status_code=401, detail="Token Innexistente")
     else:
-        c.execute('UPDATE contactos SET nombre = ?, telefono = ? WHERE email = ?',
-              (contacto.nombre, contacto.telefono, email))
-        conn.commit()
-        return contacto
+        c = conn.cursor()
+
+        c.execute('SELECT * FROM contactos WHERE email = ?', (contacto.email,))
+        existe = c.fetchone()
+        if existe is None:
+            raise fastapi.HTTPException(status_code=400, detail="Contacto no existe")   
+        else:
+            c.execute('UPDATE contactos SET nombre = ?, telefono = ? WHERE email = ?',
+                (contacto.nombre, contacto.telefono, email))
+            conn.commit()
+            return contacto
 
 
 @app.delete("/contactos/{email}")
-async def eliminar_contacto(email: str):
+async def eliminar_contacto(email: str, credentials: HTTPAuthorizationCredentials = Depends(securityBearer)):
     """Elimina un contacto."""
-    c = conn.cursor()
-    
-    c.execute('SELECT * FROM contactos WHERE email = ?', (email,))
+    connx = sqlite3.connect("usuarios.db")
+    token = credentials.credentials
+    c = connx.cursor()
+    c.execute('SELECT token FROM usuarios WHERE token = ?', (token,))
     existe = c.fetchone()
     if existe is None:
-        raise fastapi.HTTPException(status_code=400, detail="Contacto no existe")   
+        raise fastapi.HTTPException(status_code=401, detail="Token Innexistente")
     else:
-        c.execute('DELETE FROM contactos WHERE email = ?', (email,))
-        conn.commit()
-        return {"mensaje":"Contacto eliminado"}
+        c = conn.cursor()
+        c.execute('SELECT * FROM contactos WHERE email = ?', (email,))
+        existe = c.fetchone()
+        if existe is None:
+            raise fastapi.HTTPException(status_code=400, detail="Contacto no existe")   
+        else:
+            c.execute('DELETE FROM contactos WHERE email = ?', (email,))
+            conn.commit()
+            return {"mensaje":"Contacto eliminado"}
     
     
-securityBearer = HTTPBearer()
+
 @app.get("/")
 def auth(credentials: HTTPAuthorizationCredentials = Depends(securityBearer)):
     """Autenticación"""
@@ -119,9 +158,13 @@ def auth(credentials: HTTPAuthorizationCredentials = Depends(securityBearer)):
     c = connx.cursor()
     c.execute('SELECT token FROM usuarios WHERE token = ?', (token,))
     existe = c.fetchone()
-    if existe is  None:
-        raise fastapi.HTTPException(status_code=401, detail="No autorizado")
+    if existe is None:
+        raise fastapi.HTTPException(status_code=401, detail="Token Innexistente")
     else:
+        return {"mensaje":"Token Valido"}
+        
+        """
+        VALIDACION DE TOKEN POR TIEMPO DE VIDA DE 1 MINUTO
         c.execute('SELECT timestamp FROM usuarios WHERE token = ?',(token,))
         for row in c:
             hora_bd = row[0]
@@ -133,6 +176,7 @@ def auth(credentials: HTTPAuthorizationCredentials = Depends(securityBearer)):
             raise fastapi.HTTPException(status_code=430, detail="Token Caducado")
         else:
             return {"mensaje: Bienvenido"}
+        """
         
     
 security = HTTPBasic()
