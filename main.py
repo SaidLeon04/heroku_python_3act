@@ -43,7 +43,7 @@ async def crear_contacto(contacto: Contacto, credentials: HTTPAuthorizationCrede
     c.execute('SELECT token FROM usuarios WHERE token = ?', (token,))
     existe = c.fetchone()
     if existe is None:
-        raise fastapi.HTTPException(status_code=401, detail="Token Innexistente")
+        raise fastapi.HTTPException(status_code=401, detail="Token no valido")
     else:
         c = conn.cursor()
 
@@ -66,7 +66,7 @@ async def obtener_contactos(credentials: HTTPAuthorizationCredentials = Depends(
     c.execute('SELECT token FROM usuarios WHERE token = ?', (token,))
     existe = c.fetchone()
     if existe is None:
-        raise fastapi.HTTPException(status_code=401, detail="Token Innexistente")
+        raise fastapi.HTTPException(status_code=401, detail="Token no valido")
     else:
         c = conn.cursor()
         c.execute('SELECT * FROM contactos;')
@@ -89,7 +89,7 @@ async def obtener_contacto(email: str, credentials: HTTPAuthorizationCredentials
     c.execute('SELECT token FROM usuarios WHERE token = ?', (token,))
     existe = c.fetchone()
     if existe is None:
-        raise fastapi.HTTPException(status_code=401, detail="Token Innexistente")
+        raise fastapi.HTTPException(status_code=401, detail="Token no valido")
     else:
         c = conn.cursor()
         c.execute('SELECT * FROM contactos WHERE email = ?', (email,))
@@ -112,7 +112,7 @@ async def actualizar_contacto(email: str, contacto: Contacto, credentials: HTTPA
     c.execute('SELECT token FROM usuarios WHERE token = ?', (token,))
     existe = c.fetchone()
     if existe is None:
-        raise fastapi.HTTPException(status_code=401, detail="Token Innexistente")
+        raise fastapi.HTTPException(status_code=401, detail="Token no valido")
     else:
         c = conn.cursor()
 
@@ -136,7 +136,7 @@ async def eliminar_contacto(email: str, credentials: HTTPAuthorizationCredential
     c.execute('SELECT token FROM usuarios WHERE token = ?', (token,))
     existe = c.fetchone()
     if existe is None:
-        raise fastapi.HTTPException(status_code=401, detail="Token Innexistente")
+        raise fastapi.HTTPException(status_code=401, detail="Token no valido")
     else:
         c = conn.cursor()
         c.execute('SELECT * FROM contactos WHERE email = ?', (email,))
@@ -159,7 +159,7 @@ def auth(credentials: HTTPAuthorizationCredentials = Depends(securityBearer)):
     c.execute('SELECT token FROM usuarios WHERE token = ?', (token,))
     existe = c.fetchone()
     if existe is None:
-        raise fastapi.HTTPException(status_code=401, detail="Token Innexistente")
+        raise fastapi.HTTPException(status_code=401, detail="Token no valido")
     else:
         return {"mensaje":"Token Valido"}
         
